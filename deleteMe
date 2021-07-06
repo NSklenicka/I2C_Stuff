@@ -1,0 +1,34 @@
+#include <QCoreApplication>
+#include <QDebug>
+#include <bitset>
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+
+    //so let say the buf is channel 0001, data is 0000 1111 0000
+
+    char buf[] = {0b00110000, (char) 0b11110000};
+    char channel;
+
+    //get channel
+    channel = ((buf[0] & 0b00110000)>>4); //mask the 2 channel bits, shift them to the right
+    qDebug() << "channel: " << static_cast<int>(channel);
+
+    //get conversion data
+    //whats the buffer after the first operation?
+    qDebug() << "buf[0]: " << QString::number(static_cast<int>(buf[0]), 2);
+    //we're good!
+
+//    char data, data0, data1;
+//    data0 = (buf[0] & 0b00001111); //mask out the channel bits on buf[0]
+//    data = data << 8; // bit shift 8 bits to the left
+//    data = data + buf[1]; // append the second byte
+
+    //qDebug() << "data: " << QString::number(data, 2);
+
+
+    return a.exec();
+}
+;
+//    data = data/4096*5;
