@@ -6,29 +6,42 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    //so let say the buf is channel 0001, data is 0000 1111 0000
+    //dec max = 4095 = 1111 1111 1111
 
-    char buf[] = {0b00110000, (char) 0b11110000};
+    char buf[] = {0b00000111, (char) 0b11111111};
     char channel;
 
     //get channel
-    channel = ((buf[0] & 0b00110000)>>4); //mask the 2 channel bits, shift them to the right
-    qDebug() << "channel: " << static_cast<int>(channel);
+//    channel = ((buf[0] & 0b00110000)>>4); //mask the 2 channel bits, shift them to the right
+//    qDebug() << "channel: " << static_cast<int>(channel);
 
-    //get conversion data
-    //whats the buffer after the first operation?
-    qDebug() << "buf[0]: " << QString::number(static_cast<int>(buf[0]), 2);
-    //we're good!
+    //do I need static cast??
+    int ch = ((buf[0] & 0b00110000)>>4);
+    qDebug() << "channel not static cast: " << ch;
 
-//    char data, data0, data1;
-//    data0 = (buf[0] & 0b00001111); //mask out the channel bits on buf[0]
-//    data = data << 8; // bit shift 8 bits to the left
-//    data = data + buf[1]; // append the second byte
+    //get value
+    int data0, data1;
+    float data;
+    data0 = static_cast<int>(buf[0] & 0b00001111); //mask out the channel bits on buf[0]
+    //qDebug() << "data0 after mask: " << QString::number(data0, 2);
 
-    //qDebug() << "data: " << QString::number(data, 2);
+    data0 = (data0 << 8); // bit shift 8 bits to the left
+    //qDebug() << "data0 after << 8 : " << QString::number(data0, 2);
 
+    data1 = buf[1] & 0xFF;//0xFF will over flow ??
+    //qDebug() << "data1: "  << QString::number(data1, 2);
+
+    data = data0 + data1;
+
+    qDebug() << "data0 + data1: " << QString::number(data);
+
+    float Vref = 3.3;
+    float value = data/4095;
+    qDebug() << "data/4095: " << value;
+
+    value = value * Vref;
+
+    qDebug() << "value: " << value;
 
     return a.exec();
 }
-;
-//    data = data/4096*5;
