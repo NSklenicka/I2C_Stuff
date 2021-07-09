@@ -4,7 +4,27 @@
 #include <iostream>
 #include <bitset>
 
-int main(int argc, char *argv[])
+#include <ad7991.h>
+
+int main()
+{
+    AD7991 adc;
+
+    try
+    {
+        adc.initialize();
+        adc.setActiveChannels(true, false, false, false);
+
+    }
+    catch (std::runtime_error &error)
+    {
+        std::cout << error.what();
+    }
+
+    std::cin.get();
+}
+
+int main_Old(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
