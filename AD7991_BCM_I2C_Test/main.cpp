@@ -8,11 +8,10 @@
 
 int main()
 {
-    AD7991 adc;
 
     try
     {
-        adc.initialize();
+        AD7991 adc;
         adc.setActiveChannels(true, false, false, false);
 
     }

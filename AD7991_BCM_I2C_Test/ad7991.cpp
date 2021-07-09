@@ -3,24 +3,15 @@
 //raspberry pi specific
 #include <bcm2835.h>
 
-//Qt
-#include <QDebug>
-
 //STL
 #include <bitset>
 #include <string>
 #include <thread>
 #include <chrono>
+#include <iostream>
 
 
-AD7991::AD7991(QObject *parent) : QObject(parent)
-{
-
-}
-
-/************************* Initialize *************************/
-
-void AD7991::initialize()
+AD7991::AD7991()
 {
     if (!bcm2835_init())
     {
@@ -67,7 +58,7 @@ void AD7991::setActiveChannels(bool chan_1_Active, bool chan_2_Active, bool chan
      if(0 == result)
      {
          //success
-         qDebug() << "setActiveChannels(): write to configuration register success";
+         std::cout << "setActiveChannels(): write to configuration register success" << std::endl;
      }
      else
      {
