@@ -138,18 +138,14 @@ std::vector<float> AD7991::getValuesFromBuffer(const char buffer[], const int nu
         //std::cout << "channel: " << channel << std::endl;
 
         //get value
-        int data0, data1;
-        float data;
+        int data0, data1;//first byte second\ byte
+        float data; //0-255
         data0 = static_cast<int>(buffer[bufIt] & 0b00001111); //mask out the channel bits on the first byte
         data0 = (data0 << 8); // bit shift 8 bits to the left
 
-        //data1 = buffer[bufIt+1] & 0xFF;//Im not sure why Im doing this???
-        data1 = static_cast<int>(buffer[1]);
+        data1 = static_cast<int>(buffer[bufIt+1]);
 
         data = data0 + data1;
-        //std::cout << "data0: " << data0 << std::endl;
-        //std::cout << "data1: " << data1 << std::endl;
-        //std::cout << "data: "  << data  << std::endl;
 
         float value = data/4095;
         value = value * m_Vref;
