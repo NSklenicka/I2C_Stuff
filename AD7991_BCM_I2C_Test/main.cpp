@@ -1,10 +1,8 @@
-#include <QCoreApplication>
-#include <bcm2835.h>
-#include <qdebug.h>
-#include <iostream>
-#include <bitset>
 
+#include <iostream>
 #include <ad7991.h>
+
+
 
 int main()
 {
@@ -12,16 +10,30 @@ int main()
     try
     {
         AD7991 adc;
-        adc.setActiveChannels(true, false, false, false);
-
+        adc.setActiveChannels(true, true, false, false);
+        std::vector <float> vals;
+        adc.readADC(vals);
     }
     catch (std::runtime_error &error)
     {
         std::cout << error.what();
     }
-
+    catch (...)
+    {
+        std::cout << "unkown error" << std::endl;
+    }
     std::cin.get();
 }
+
+
+
+
+
+
+
+
+/*
+
 
 int main_Old(int argc, char *argv[])
 {
@@ -152,3 +164,5 @@ int main_Old(int argc, char *argv[])
 
     return a.exec();
 }
+
+*/
