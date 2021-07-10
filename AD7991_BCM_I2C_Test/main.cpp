@@ -10,9 +10,16 @@ int main()
     try
     {
         AD7991 adc;
-        adc.setActiveChannels(true, true, false, false);
+        adc.setActiveChannels(0,0,0,1);
+        adc.setVref(3.29);
+
         std::vector <float> vals;
         adc.readADC(vals);
+
+        for(int i = 0; i < 4; i++)
+        {
+            std::cout << "channel " << i << " : " << vals[i] << std::endl;
+        }
     }
     catch (std::runtime_error &error)
     {

@@ -31,21 +31,21 @@ AD7991::AD7991()
 
 /************************* Set Active Channel *************************/
 
-void AD7991::setActiveChannels(bool chan_1_Active, bool chan_2_Active, bool chan_3_Active, bool chan_4_Active)
+void AD7991::setActiveChannels(bool chan_0_Active, bool chan_1_Active, bool chan_2_Active, bool chan_3_Active)
 {
+    m_chan_0_Active = chan_0_Active;
     m_chan_1_Active = chan_1_Active;
     m_chan_2_Active = chan_2_Active;
     m_chan_3_Active = chan_3_Active;
-    m_chan_4_Active = chan_4_Active;
 
     //create the configuration byte
 
     std::bitset<8> channels = {0};
 
-    if(chan_1_Active) channels[4] = 1;
-    if(chan_2_Active) channels[5] = 1;
-    if(chan_3_Active) channels[6] = 1;
-    if(chan_4_Active) channels[7] = 1;
+    if(chan_0_Active) channels[4] = 1;
+    if(chan_1_Active) channels[5] = 1;
+    if(chan_2_Active) channels[6] = 1;
+    if(chan_3_Active) channels[7] = 1;
 
     char configByte = channels.to_ulong();
 
@@ -81,12 +81,10 @@ void AD7991::readADC(std::vector<float> &values)
 {
 
     int numChannelsToRead = 0;
+    if(m_chan_0_Active) ++numChannelsToRead;
     if(m_chan_1_Active) ++numChannelsToRead;
     if(m_chan_2_Active) ++numChannelsToRead;
     if(m_chan_3_Active) ++numChannelsToRead;
-    if(m_chan_4_Active) ++numChannelsToRead;
-
-    std::cout << "num channels: " << numChannelsToRead << std::endl;
 
     if(0 == numChannelsToRead)
     {
@@ -119,23 +117,45 @@ void AD7991::readADC(std::vector<float> &values)
     }
 
     values = getValuesFromBuffer(buf, numChannelsToRead);
+
+    SLEEP(DELAY_MS_BETWEEN_COMMANDS);
 }
 
 /************************* Convert raw binary to analog values *************************/
 
 std::vector<float> AD7991::getValuesFromBuffer(const char buffer[], const int numChannels)
 {
-    std::vector<float> vals;
-    vals.resize(numChannels);
+    std::vector<float> vals = {0};
+    vals.resize(4);
 
     for(int i = 0; i < numChannels; i++) //for each active channel
     {
-        //get the 2 relevant bytes of the buffer
+        //get the 2 relevant bytes of the buffer = it & it+1
+        int bufIt = i*2;
 
+        //get channel
+        short channel = ((buffer[bufIt] & 0b00110000) >> 4); //mask the 2 channel bits, shift them to the right
+        //std::cout << "channel: " << channel << std::endl;
+
+        //get value
+        int data0, data1;
+        float data;
+        data0 = static_cast<int>(buffer[bufIt] & 0b00001111); //mask out the channel bits on the first byte
+        data0 = (data0 << 8); // bit shift 8 bits to the left
+
+        //data1 = buffer[bufIt+1] & 0xFF;//Im not sure why Im doing this???
+        data1 = static_cast<int>(buffer[1]);
+
+        data = data0 + data1;
+        //std::cout << "data0: " << data0 << std::endl;
+        //std::cout << "data1: " << data1 << std::endl;
+        //std::cout << "data: "  << data  << std::endl;
+
+        float value = data/4095;
+        value = value * m_Vref;
+        vals[channel] = value;
+        //std::cout << "vals at " << i << " = " << value << std::endl;;
     }
-
-
-
 
     return vals;
 }
