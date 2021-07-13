@@ -43,7 +43,7 @@ void NVM_24LC024::writeByte(char address, char data)
     {
         //failed
         std::string error = "NVM_24LC024::writeByte() failed. Error code ";
-        error += result;
+        error += std::to_string(result);
         error += getErrorFromCode(result);
         throw std::runtime_error(error);
     }
@@ -54,7 +54,7 @@ void NVM_24LC024::writeByte(char address, char data)
 
 /********************** Read Byte ******************************/
 
-char NVM_24LC024::readByte(char address)
+uint8_t NVM_24LC024::readByte(char address)
 {
     char buf[] = {address};
     int result;
@@ -83,7 +83,7 @@ char NVM_24LC024::readByte(char address)
     {
         //failed
         std::string error = "NVM_24LC024::readByte() failed. Error code ";
-        error += result;
+        error += std::to_string(result);
         error += getErrorFromCode(result);
         throw std::runtime_error(error);
     }
