@@ -10,6 +10,12 @@ int main()
     try
     {
         AD7991 adc;
+
+        if(!adc.isDeviceConnected())
+        {
+           return 1;
+        }
+
         adc.setActiveChannels(1,1,1,1);
         adc.setVref(3.3);
 

@@ -146,6 +146,7 @@ std::vector<float> AD7991::getValuesFromBuffer(const char buffer[], const int nu
         data1 = static_cast<int>(buffer[bufIt+1]);
 
         data = data0 + data1;
+        std::cout << channel << " raw value: " << data << std::endl;
 
         float value = data/4095;
         value = value * m_Vref;
