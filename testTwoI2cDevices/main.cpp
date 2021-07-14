@@ -12,7 +12,7 @@
 static QTimer adcTimer;
 static QTimer nvmTimer;
 
-static std::mutex busMutex;
+static std::mutex busMutex; // apparently I dont' even need a mutex here. Maybe qt is handling things serially.
 static short i = 0;
 
 inline void printValues(const std::vector <float> &values)
@@ -27,7 +27,7 @@ void readADC()
 {
     try
     {
-        busMutex.try_lock();
+        //busMutex.try_lock();
         AD7991 adc;
         adc.setVref(3.3);
         adc.setActiveChannels(1,1,1,1);
@@ -36,7 +36,7 @@ void readADC()
         printValues(values);
         i++;
         std::cout << "i: " << i << std::endl;
-        busMutex.unlock();
+        //busMutex.unlock();
     }
     catch (std::runtime_error &error)
     {
@@ -50,13 +50,13 @@ void readNvm()
     std::cout << "readNvm()" << std::endl;
     try
     {
-        busMutex.try_lock();
+        //busMutex.try_lock();
         NVM_24LC024 nvm;
         char byte = nvm.readByte(0x11);
         std::cout << "byte: " << std::to_string(static_cast<int>(byte)) << std::endl;
         i++;
         std::cout << "i: " << i << std::endl;
-        busMutex.unlock();
+        //busMutex.unlock();
     }
     catch (std::runtime_error &error)
     {
