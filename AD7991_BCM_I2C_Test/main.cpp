@@ -10,13 +10,13 @@ int main()
     try
     {
         AD7991 adc;
-        adc.setActiveChannels(0,0,0,1);
-        adc.setVref(3.29);
+        adc.setActiveChannels(1,1,1,1);
+        adc.setVref(3.3);
 
         std::vector <float> vals;
         adc.readADC(vals);
 
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < vals.size(); i++)
         {
             std::cout << "channel " << i << " : " << vals[i] << std::endl;
         }

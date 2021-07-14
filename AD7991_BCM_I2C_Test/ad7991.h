@@ -25,6 +25,8 @@ public:
 
     void setVref(float Vref);
 
+    bool isDeviceConnected();
+
 private:
 
     std::string getErrorFromCode(int result);

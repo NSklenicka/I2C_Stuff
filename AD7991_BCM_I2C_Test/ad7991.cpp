@@ -196,3 +196,23 @@ void AD7991::setVref(float Vref)
         throw std::runtime_error(error);
     }
 }
+
+/************************* Device Connected *************************/
+
+bool AD7991::isDeviceConnected()
+{
+    char reg = 0;
+    char received[1];
+
+    int code = bcm2835_i2c_read_register_rs(&reg, received, 1);
+
+    if(code == 0)
+    {
+        return true;
+    }
+    else
+    {
+        std::cout << "device not found" << std::endl;
+        return false;
+    }
+}
